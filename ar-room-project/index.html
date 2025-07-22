@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Markerless AR Room</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+  </head>
+
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true;"
+      device-orientation-permission-ui="enabled: true"
+    >
+      <!-- Preload assets -->
+      <a-assets>
+        <a-asset-item id="room" src="models/test-tarjetas-ar1.glb"></a-asset-item>
+        <audio id="birds" src="audio/bird.mp3"></audio>
+      </a-assets>
+
+      <!-- 3D Room model -->
+      <a-entity gltf-model="#room"
+                position="0 0 -2"
+                scale="0.1 0.1 0.1"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 60000">
+      </a-entity>
+
+      <!-- Background sound -->
+      <a-sound src="#birds"
+               autoplay="true"
+               loop="true"
+               positional="false"
+               volume="1">
+      </a-sound>
+
+      <!-- Camera -->
+      <a-entity camera look-controls></a-entity>
+    </a-scene>
+  </body>
+</html>
