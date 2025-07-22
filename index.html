@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My AR Scene</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.min.js"></script>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs="sourceType: webcam;">
-      
-      <!-- Use your own marker pattern -->
-      <a-marker type="pattern" url="markers/pattern-marker.patt">
-        <!-- 3D Model -->
-        <a-entity gltf-model="models/test-tarjetas-ar1.glb"
-                  scale="0.5 0.5 0.5"
-                  position="0 0 0">
-        </a-entity>
-        <a-sound src="audio/bird.mp3"
-         autoplay="true"
-         positional="false"
-         loop="false"
-         volume="1">
-</a-sound>
-      </a-marker>
 
-      <a-entity camera></a-entity>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true;"
+      device-orientation-permission-ui="enabled: true"
+    >
+      <!-- Your full room model -->
+      <a-entity gltf-model="models/test-tarjetas-ar1.glb"
+                scale="0.5 0.5 0.5"
+                position="0 0 -4"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 60000;">
+      </a-entity>
+
+      <!-- Sound -->
+      <a-sound src="audio/sound.mp3"
+               autoplay="true"
+               loop="true"
+               positional="false"
+               volume="1">
+      </a-sound>
+
+      <!-- Main camera: lets you rotate in place -->
+      <a-entity camera look-controls></a-entity>
     </a-scene>
   </body>
 </html>
