@@ -1,27 +1,37 @@
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>AR Hiro Marker - Red Cube</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <title>AR Cube Scene</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      .arjs-loader {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .arjs-loader div {
+        text-align: center;
+        font-size: 1.2em;
+        color: white;
+      }
+    </style>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
-      renderer="logarithmicDepthBuffer: true;"
-      device-orientation-permission-ui="enabled: true"
-    >
-      <!-- Lighting -->
-      <a-entity light="type: ambient; intensity: 1"></a-entity>
-      <a-entity light="type: directional; intensity: 0.6" position="1 1 0"></a-entity>
-
-      <!-- Hiro marker with red cube -->
-      <a-marker preset="hiro">
-        <a-box position="0 0.5 0" color="red"></a-box>
+  <body style='margin : 0px; overflow: hidden;'>
+    <div class="arjs-loader">
+      <div>Please wait, AR experience is loading...</div>
+    </div>
+    <a-scene embedded arjs='sourceType: webcam;'>
+      <a-marker preset='hiro'>
+        <a-box position="0 0.5 0" material="color: red"></a-box>
       </a-marker>
-
-      <!-- Camera -->
       <a-entity camera></a-entity>
     </a-scene>
   </body>
