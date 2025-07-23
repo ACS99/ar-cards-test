@@ -1,33 +1,262 @@
 <html>
-  <head>
-    <title>AR 3D Model Scene</title>
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<head>
+    <meta charset="utf-8">
+    <title>Medieval AR Room</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.0/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        #instructions {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+            text-align: center;
+        }
+        
+        #instructions.hidden {
+            display: none;
+        }
+        
+        .close-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
     </style>
-  </head>
-  <body style='margin : 0px; overflow: hidden;'>
+</head>
+<body>
+    <div id="instructions">
+        <h3>🏰 Medieval AR Room</h3>
+        <p>Point your camera at the marker below to enter the medieval chamber!</p>
+        <div style="margin: 10px 0;">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANYSURBVHic7Z09aBRBFMefJBqwsLGwsLCwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGwsLGB2dnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZmZnZ" alt="AR Marker" style="width: 120px; height: 120px; border: 2px solid white;">
+        </div>
+        <p style="font-size: 12px;">Print this marker or display it on another screen</p>
+        <button class="close-btn" onclick="hideInstructions()">Enter the Chamber</button>
+    </div>
 
-    <a-scene embedded arjs='sourceType: webcam; detectionMode: mono_and_matrix; debugUIEnabled: false;'
-             vr-mode-ui="enabled: true"
-             loading-screen="enabled: false;"
-             renderer="logarithmicDepthBuffer: true;"
-             id="scene">
+    <a-scene 
+        embedded 
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; colorManagement: true;"
+        gesture-detector>
+        
+        <!-- Assets -->
+        <a-assets>
+            <!-- Textures -->
+            <img id="stoneWall" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJzdG9uZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjNzA3MDcwIi8+CiAgICAgIDxyZWN0IHg9IjIiIHk9IjIiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iIzgwODA4MCIvPgogICAgICA8cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iNTYiIGhlaWdodD0iNTYiIGZpbGw9IiM2MDYwNjAiLz4KICAgIDwvcGF0dGVybj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIGZpbGw9InVybCgjc3RvbmUpIi8+Cjwvc3ZnPg==" crossorigin="anonymous" />
+            
+            <img id="woodFloor" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJ3b29kIiB4PSIwIiB5PSIwIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjE2IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxNiIgZmlsbD0iIzY0NDEyOCIvPgogICAgICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjIiIGZpbGw9IiM1MDM0MjAiLz4KICAgICAgPHJlY3QgeD0iMCIgeT0iMTQiIHdpZHRoPSIxMjgiIGhlaWdodD0iMiIgZmlsbD0iIzUwMzQyMCIvPgogICAgPC9wYXR0ZXJuPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgZmlsbD0idXJsKCN3b29kKSIvPgo8L3N2Zz4=" crossorigin="anonymous" />
+        </a-assets>
 
-      <a-assets>
-        <a-asset-item id="my-3d-model" src="tezt-cube-tarjetas.gltf"></a-asset-item>
-      </a-assets>
-
-      <a-marker preset='hiro'>
-        <a-entity gltf-model="#my-3d-model" scale="1 1 1" position="0 0 0" rotation="0 0 0"></a-entity>
-      </a-marker>
-
-      <a-entity camera></a-entity>
+        <!-- AR Marker -->
+        <a-marker preset="hiro" registered="registered" emitevents="true" id="markerA">
+            
+            <!-- Medieval Room -->
+            <!-- Floor -->
+            <a-plane 
+                position="0 0 0" 
+                rotation="-90 0 0" 
+                width="6" 
+                height="6" 
+                material="src: #woodFloor; repeat: 3 3">
+            </a-plane>
+            
+            <!-- Walls -->
+            <!-- Back wall -->
+            <a-plane 
+                position="0 1.5 -3" 
+                width="6" 
+                height="3" 
+                material="src: #stoneWall; repeat: 2 1">
+            </a-plane>
+            
+            <!-- Left wall -->
+            <a-plane 
+                position="-3 1.5 0" 
+                rotation="0 90 0" 
+                width="6" 
+                height="3" 
+                material="src: #stoneWall; repeat: 2 1">
+            </a-plane>
+            
+            <!-- Right wall -->
+            <a-plane 
+                position="3 1.5 0" 
+                rotation="0 -90 0" 
+                width="6" 
+                height="3" 
+                material="src: #stoneWall; repeat: 2 1">
+            </a-plane>
+            
+            <!-- Ceiling -->
+            <a-plane 
+                position="0 3 0" 
+                rotation="90 0 0" 
+                width="6" 
+                height="6" 
+                material="color: #404040">
+            </a-plane>
+            
+            <!-- Medieval Furniture and Decorations -->
+            
+            <!-- Wooden Table -->
+            <a-box 
+                position="0 0.4 -1" 
+                width="2" 
+                height="0.1" 
+                depth="1" 
+                material="color: #654321">
+            </a-box>
+            <!-- Table legs -->
+            <a-box position="-0.8 0.2 -1.4" width="0.1" height="0.4" depth="0.1" material="color: #543211"></a-box>
+            <a-box position="0.8 0.2 -1.4" width="0.1" height="0.4" depth="0.1" material="color: #543211"></a-box>
+            <a-box position="-0.8 0.2 -0.6" width="0.1" height="0.4" depth="0.1" material="color: #543211"></a-box>
+            <a-box position="0.8 0.2 -0.6" width="0.1" height="0.4" depth="0.1" material="color: #543211"></a-box>
+            
+            <!-- Wooden Chair -->
+            <a-box position="1.5 0.2 -0.5" width="0.4" height="0.05" depth="0.4" material="color: #654321"></a-box>
+            <a-box position="1.5 0.6 -0.7" width="0.4" height="0.8" depth="0.05" material="color: #654321"></a-box>
+            <!-- Chair legs -->
+            <a-box position="1.3 0.1 -0.3" width="0.05" height="0.2" depth="0.05" material="color: #543211"></a-box>
+            <a-box position="1.7 0.1 -0.3" width="0.05" height="0.2" depth="0.05" material="color: #543211"></a-box>
+            <a-box position="1.3 0.1 -0.7" width="0.05" height="0.2" depth="0.05" material="color: #543211"></a-box>
+            <a-box position="1.7 0.1 -0.7" width="0.05" height="0.2" depth="0.05" material="color: #543211"></a-box>
+            
+            <!-- Treasure Chest -->
+            <a-box 
+                position="-2 0.2 -2" 
+                width="0.8" 
+                height="0.4" 
+                depth="0.4" 
+                material="color: #8B4513">
+            </a-box>
+            <!-- Chest lid -->
+            <a-box 
+                position="-2 0.45 -2" 
+                width="0.8" 
+                height="0.1" 
+                depth="0.4" 
+                material="color: #654321">
+            </a-box>
+            
+            <!-- Torch on wall -->
+            <a-cylinder 
+                position="-2.8 2 -1" 
+                radius="0.03" 
+                height="0.8" 
+                material="color: #654321">
+            </a-cylinder>
+            <!-- Fire effect -->
+            <a-sphere 
+                position="-2.8 2.5 -1" 
+                radius="0.1" 
+                material="color: #FF4500; opacity: 0.8"
+                animation="property: scale; to: 1.2 1.5 1.2; dir: alternate; dur: 1000; loop: true">
+            </a-sphere>
+            
+            <!-- Weapon rack -->
+            <a-box position="2.8 1 1" width="0.1" height="2" depth="0.1" material="color: #654321"></a-box>
+            <!-- Sword -->
+            <a-box position="2.7 1.5 1" width="0.05" height="0.8" depth="0.05" material="color: #C0C0C0"></a-box>
+            <a-box position="2.7 1.9 1" width="0.2" height="0.05" depth="0.05" material="color: #8B4513"></a-box>
+            
+            <!-- Medieval banners -->
+            <a-plane 
+                position="-1.5 2.2 -2.9" 
+                width="0.6" 
+                height="0.8" 
+                material="color: #8B0000">
+            </a-plane>
+            <a-plane 
+                position="1.5 2.2 -2.9" 
+                width="0.6" 
+                height="0.8" 
+                material="color: #000080">
+            </a-plane>
+            
+            <!-- Candles on table -->
+            <a-cylinder 
+                position="-0.5 0.5 -1" 
+                radius="0.02" 
+                height="0.2" 
+                material="color: #FFFFF0">
+            </a-cylinder>
+            <a-sphere 
+                position="-0.5 0.62 -1" 
+                radius="0.03" 
+                material="color: #FFA500; opacity: 0.9"
+                animation="property: scale; to: 1.1 1.2 1.1; dir: alternate; dur: 800; loop: true">
+            </a-sphere>
+            
+            <a-cylinder 
+                position="0.5 0.5 -1" 
+                radius="0.02" 
+                height="0.2" 
+                material="color: #FFFFF0">
+            </a-cylinder>
+            <a-sphere 
+                position="0.5 0.62 -1" 
+                radius="0.03" 
+                material="color: #FFA500; opacity: 0.9"
+                animation="property: scale; to: 1.1 1.2 1.1; dir: alternate; dur: 900; loop: true">
+            </a-sphere>
+            
+            <!-- Books on table -->
+            <a-box position="0.3 0.46 -0.7" width="0.15" height="0.02" depth="0.2" material="color: #8B4513"></a-box>
+            <a-box position="0.15 0.48 -0.7" width="0.12" height="0.02" depth="0.18" material="color: #654321"></a-box>
+            
+            <!-- Stone pillar -->
+            <a-cylinder 
+                position="-1.5 1.5 1.5" 
+                radius="0.2" 
+                height="3" 
+                material="color: #808080">
+            </a-cylinder>
+            
+            <!-- Ambient lighting -->
+            <a-light type="ambient" color="#404040" intensity="0.4"></a-light>
+            <a-light type="point" position="-2.8 2.5 -1" color="#FF4500" intensity="0.5" distance="3"></a-light>
+            <a-light type="point" position="0 0.6 -1" color="#FFA500" intensity="0.3" distance="2"></a-light>
+            
+        </a-marker>
+        
+        <!-- Camera -->
+        <a-entity camera></a-entity>
     </a-scene>
 
     <script>
-      // No custom JavaScript for audio or loader needed in this version
+        function hideInstructions() {
+            document.getElementById('instructions').classList.add('hidden');
+        }
+        
+        // Auto-hide instructions after marker is detected
+        document.querySelector('#markerA').addEventListener('markerFound', function() {
+            setTimeout(() => {
+                hideInstructions();
+            }, 3000);
+        });
+        
+        // Show instructions when marker is lost
+        document.querySelector('#markerA').addEventListener('markerLost', function() {
+            // Optional: show instructions again
+        });
     </script>
-  </body>
+</body>
 </html>
