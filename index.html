@@ -23,31 +23,33 @@
   </button>
 
   <a-scene
-    embedded
-    arjs="sourceType: webcam; debugUIEnabled: false;"
-    vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true;"
-    device-orientation-permission-ui="enabled: true"
-  >
-    <a-assets>
-      <a-asset-item id="room" src="models/test-tarjetas-ar1.glb"></a-asset-item>
-      <audio id="birds" src="audio/bird.mp3"></audio>
-    </a-assets>
-    
-    <!-- 3D model -->
-    <a-entity gltf-model="#room"
-              position="0 -1 -3"
-              scale="1 1 1"
-              animation="property: rotation; to: 0 360 0; loop: true; dur: 60000"
-              camera look-controls wasd-controls position="0 0 0">
-    </a-entity>
+  embedded
+  arjs="sourceType: webcam; debugUIEnabled: false;"
+  vr-mode-ui="enabled: false"
+  renderer="logarithmicDepthBuffer: true;"
+  device-orientation-permission-ui="enabled: true"
+>
+  <a-assets>
+    <a-asset-item id="room" src="models/test-tarjetas-ar1.glb"></a-asset-item>
+    <audio id="birds" src="audio/bird.mp3"></audio>
+  </a-assets>
 
-    <!-- Sound (triggered on user click) -->
-    <a-sound id="sound" src="#birds" autoplay="false" loop="true" positional="false"></a-sound>
+  <!-- Room -->
+  <a-entity gltf-model="#room"
+            position="0 0 -4"
+            scale="0.5 0.5 0.5">
+  </a-entity>
 
-    <!-- Camera -->
-    <a-entity camera look-controls></a-entity>
-  </a-scene>
+  <!-- Ambient Sound -->
+  <a-sound src="#birds"
+           autoplay="true"
+           loop="true"
+           positional="false">
+  </a-sound>
+
+  <!-- Camera with simulated walk -->
+  <a-entity camera look-controls wasd-controls position="0 0 0"></a-entity>
+</a-scene>
 
   <script>
     document.getElementById('startButton').addEventListener('click', function () {
