@@ -1,65 +1,73 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Markerless AR Room</title>
+    <title>AR Room with Marker</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.min.js"></script>
   </head>
 
   <body style="margin: 0; overflow: hidden;">
-  <button id="startButton" style="
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px 40px;
-    font-size: 18px;
-    background: #000;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    z-index: 999;">
-    Start AR
-  </button>
+    <!-- Tap-to-start button for sound -->
+    <button id="startButton" style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 40px;
+      font-size: 18px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      z-index: 999;">
+      Start AR
+    </button>
 
-  <a-scene
-  embedded
-  arjs="sourceType: webcam; debugUIEnabled: false;"
-  vr-mode-ui="enabled: false"
-  renderer="logarithmicDepthBuffer: true;"
-  device-orientation-permission-ui="enabled: true"
->
-  <a-assets>
-    <a-asset-item id="room" src="models/test-tarjetas-ar1.glb"></a-asset-item>
-    <audio id="birds" src="audio/bird.mp3"></audio>
-  </a-assets>
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      device-orientation-permission-ui="enabled: true"
+    >
+      <!-- Load assets -->
+      <a-assets>
+        <a-asset-item id="room" src="models/test-tarjetas-ar1.glb"></a-asset-item>
+        <audio id="birds" src="audio/bird.mp3"></audio>
+      </a-assets>
 
-  <!-- Room -->
-  <a-entity gltf-model="#room"
-            position="0 0 -4"
-            scale="0.5 0.5 0.5">
-  </a-entity>
+      <!-- Lighting -->
+      <a-entity light="type: ambient; color: #ffffff; intensity: 1"></a-entity>
+      <a-entity light="type: directional; color: #ffffff; intensity: 0.6" position="1 1 0"></a-entity>
 
-  <!-- Ambient Sound -->
-  <a-sound src="#birds"
-           autoplay="true"
-           loop="true"
-           positional="false">
-  </a-sound>
+      <!-- AR Marker (Hiro) with room model attached -->
+      <a-marker preset="hiro">
+        <a-entity gltf-model="#room"
+                  position="0 0 0"
+                  scale="0.5 0.5 0.5">
+        </a-entity>
+        <!-- Sound attached to marker -->
+        <a-sound id="sound"
+                 src="#birds"
+                 autoplay="false"
+                 loop="true"
+                 positional="false"
+                 volume="1">
+        </a-sound>
+      </a-marker>
 
-  <!-- Camera with simulated walk -->
-  <a-entity camera look-controls wasd-controls position="0 0 0"></a-entity>
-</a-scene>
+      <!-- Camera (no need for wasd-controls with marker) -->
+      <a-entity camera></a-entity>
+    </a-scene>
 
-  <script>
-    document.getElementById('startButton').addEventListener('click', function () {
-      // Start the audio manually
-      const soundEl = document.querySelector('#sound');
-      soundEl.components.sound.playSound();
-
-      // Hide the button
-      this.style.display = 'none';
-    });
-  </script>
-</body>
+    <!-- JS to start sound on tap -->
+    <script>
+      document.getElementById('startButton').addEventListener('click', function () {
+        const soundEl = document.querySelector('#sound');
+        if (soundEl && soundEl.components && soundEl.components.sound) {
+          soundEl.components.sound.playSound();
+        }
+        this.style.display = 'none';
+      });
+    </script>
+  </body>
 </html>
