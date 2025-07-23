@@ -1,55 +1,36 @@
 <html>
   <head>
-    <title>AR 3D Scene & Audio</title>
+    <title>AR Cube Scene</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
       body { margin: 0; overflow: hidden; }
-      /* No .arjs-loader styling needed anymore */
+      .arjs-loader {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .arjs-loader div {
+        text-align: center;
+        font-size: 1.2em;
+        color: white;
+      }
     </style>
   </head>
   <body style='margin : 0px; overflow: hidden;'>
-    <a-scene embedded arjs='sourceType: webcam; detectionMode: mono_and_matrix; debugUIEnabled: false;'
-             vr-mode-ui="enabled: false"
-             loading-screen="enabled: false;"
-             renderer="logarithmicDepthBuffer: true;"
-             id="scene">
-
-      <a-assets>
-        <a-asset-item id="my-3d-model" src="test-tarjetas-ar1.gltf"></a-asset-item>
-        <audio id="my-audio" src="bird.mp3" preload="auto"></audio>
-      </a-assets>
-
+    <a-scene embedded arjs='sourceType: webcam;'>
       <a-marker preset='hiro'>
-        <a-entity gltf-model="#my-3d-model" scale="0.1 0.1 0.1" position="0 0.5 0" rotation="0 0 0"></a-entity>
-        <a-entity sound="src: #my-audio; autoplay: false; loop: true; volume: 1;" id="audio-player"></a-entity>
+        <a-box position="0 0.5 0" material="color: red"></a-box>
       </a-marker>
-
       <a-entity camera></a-entity>
     </a-scene>
-
-    <script>
-      // Removed: Script that hid the loader on 'arjs-original-camera-init'
-
-      // Play/pause audio based on marker visibility
-      AFRAME.registerComponent('play-on-marker', {
-        init: function () {
-          const marker = this.el.parentNode; // Get the parent marker entity
-          const audioPlayer = this.el;
-
-          marker.addEventListener('markerFound', function () {
-            console.log('Marker Found - Playing audio');
-            audioPlayer.components.sound.playSound();
-          });
-
-          marker.addEventListener('markerLost', function () {
-            console.log('Marker Lost - Pausing audio');
-            audioPlayer.components.sound.pauseSound();
-          });
-        }
-      });
-      document.querySelector('#audio-player').setAttribute('play-on-marker', '');
-
-    </script>
   </body>
 </html>
+
