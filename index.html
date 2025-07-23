@@ -1,10 +1,11 @@
 <html>
   <head>
-    <title>AR Cube Scene</title>
+    <title>AR 3D Scene & Audio</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
       body { margin: 0; overflow: hidden; }
+      /* Basic styling for the loader */
       .arjs-loader {
         height: 100%;
         width: 100%;
@@ -16,21 +17,65 @@
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-      .arjs-loader div {
-        text-align: center;
-        font-size: 1.2em;
         color: white;
+        font-size: 1.2em;
+        text-align: center;
+      }
+      /* Hide the loader when AR.js is ready */
+      .arjs-loader.hidden {
+        display: none;
       }
     </style>
   </head>
   <body style='margin : 0px; overflow: hidden;'>
-    <a-scene embedded arjs='sourceType: webcam;'>
+    <div class="arjs-loader" id="arjs-loader">
+      <div>Please wait, AR experience is loading...</div>
+    </div>
+
+    <a-scene embedded arjs='sourceType: webcam; detectionMode: mono_and_matrix; debugUIEnabled: false;'
+             vr-mode-ui="enabled: false"
+             loading-screen="enabled: false;"
+             renderer="logarithmicDepthBuffer: true;"
+             id="scene">
+
+      <a-assets>
+        <a-asset-item id="my-3d-model" src="test-tarjetas-ar1.gltf"></a-asset-item>
+        <audio id="my-audio" src="bird.mp3" preload="auto"></audio>
+      </a-assets>
+
       <a-marker preset='hiro'>
-        <a-box position="0 0.5 0" material="color: red"></a-box>
+        <a-entity gltf-model="#my-3d-model" scale="0.1 0.1 0.1" position="0 0.5 0" rotation="0 0 0"></a-entity>
+        <a-entity sound="src: #my-audio; autoplay: false; loop: true; volume: 1;" id="audio-player"></a-entity>
       </a-marker>
+
       <a-entity camera></a-entity>
     </a-scene>
+
+    <script>
+      // Hide the loader once the AR.js scene is ready
+      document.querySelector('a-scene').addEventListener('arjs-original-camera-init', function () {
+        document.getElementById('arjs-loader').classList.add('hidden');
+      });
+
+      // Play/pause audio based on marker visibility
+      AFRAME.registerComponent('play-on-marker', {
+        init: function () {
+          const marker = this.el.parentNode; // Get the parent marker entity
+          const audioPlayer = this.el;
+
+          marker.addEventListener('markerFound', function () {
+            console.log('Marker Found - Playing audio');
+            audioPlayer.components.sound.playSound();
+          });
+
+          marker.addEventListener('markerLost', function () {
+            console.log('Marker Lost - Pausing audio');
+            audioPlayer.components.sound.pauseSound();
+          });
+        }
+      });
+      document.querySelector('#audio-player').setAttribute('play-on-marker', '');
+
+    </script>
   </body>
 </html>
-
