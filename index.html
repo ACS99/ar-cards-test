@@ -13,6 +13,7 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.8);
         display: flex;
+        flex-direction: column; /* To stack message and button */
         justify-content: center;
         align-items: center;
         color: white;
@@ -23,17 +24,29 @@
       #arjs-loader.hidden {
         display: none;
       }
+      #startButton {
+        margin-top: 20px;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      #startButton:hover {
+        background-color: #0056b3;
+      }
     </style>
-    <!-- Load Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Load JSARToolKit5 core and Three.js helper -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-jsartoolkit5.min.js"></script>
-    <!-- This is the main script for our AR scene -->
     <script src="main.js" defer></script>
   </head>
   <body>
     <div id="arjs-loader">
       <div>Loading AR experience... Please ensure camera access is allowed.</div>
+      <button id="startButton">Start AR</button>
     </div>
     <canvas id="arCanvas"></canvas>
   </body>
