@@ -64,52 +64,5 @@
         <!-- Camera -->
         <a-entity camera></a-entity>
     </a-scene>
-
-    <script>
-        let statusDiv = document.getElementById('status');
-        
-        function updateStatus(message) {
-            statusDiv.textContent = `Status: ${message}`;
-            console.log(message);
-        }
-        
-        // Wait for A-Frame to load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateStatus('A-Frame loaded, starting camera...');
-        });
-        
-        // Check for camera permissions
-        document.querySelector('a-scene').addEventListener('loaded', function() {
-            updateStatus('Scene loaded, camera starting...');
-        });
-        
-        // Marker events
-        document.querySelector('#markerA').addEventListener('markerFound', function() {
-            updateStatus('✅ Marker detected! Red cube should be visible');
-            console.log('Marker found!');
-        });
-        
-        document.querySelector('#markerA').addEventListener('markerLost', function() {
-            updateStatus('Point camera at Hiro marker to see red cube');
-            console.log('Marker lost!');
-        });
-        
-        // Error handling
-        window.addEventListener('error', function(e) {
-            updateStatus(`Error: ${e.message}`);
-        });
-        
-        // Check if camera is working after a few seconds
-        setTimeout(function() {
-            const video = document.querySelector('video');
-            if (!video) {
-                updateStatus('❌ No camera detected - check permissions');
-            } else if (video.videoWidth === 0) {
-                updateStatus('❌ Camera not working - check permissions');
-            } else {
-                updateStatus('📷 Camera ready - point at Hiro marker');
-            }
-        }, 5000);
-    </script>
 </body>
 </html>
