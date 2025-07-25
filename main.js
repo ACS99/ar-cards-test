@@ -5,9 +5,13 @@ let scene, camera, renderer;
 let arToolkitSource, arToolkitContext;
 let markerRoot; // This will be the Three.js group attached to the marker
 let cube;       // Our red cube
+let loaderElement; // Reference to the loading overlay
 
 // --- Initialization Function ---
 function init() {
+    // Prevent multiple initializations
+    if (arToolkitSource && arToolkitSource.ready) return;
+
     // 1. Setup Three.js Scene
     scene = new THREE.Scene();
 
@@ -30,6 +34,8 @@ function init() {
     // 4. Setup AR.js Source (Webcam Feed)
     arToolkitSource = new THREEx.ArToolkitSource({
         sourceType: 'webcam',
+        // Optional: Select back camera if available (facingMode: { exact: "environment" })
+        // sourceParameters: { facingMode: { exact: "environment" } }
     });
 
     arToolkitSource.init(function onReady() {
@@ -39,15 +45,24 @@ function init() {
         arToolkitSource.copyElementSizeTo(arToolkitContext.domElement);
 
         // Hide the loading message now that the camera source is ready
-        document.getElementById('arjs-loader').classList.add('hidden');
+        if (loaderElement) {
+            loaderElement.classList.add('hidden');
+        }
+        // Start the animation loop only after source is ready
+        animate();
     });
+
+    arToolkitSource.domElement.onerror = function(e) {
+        console.error("AR Toolkit Source Error:", e);
+        if (loaderElement) {
+            loaderElement.innerHTML = '<div>Camera access failed. Please ensure permissions are granted and try again.</div>';
+        }
+    };
+
 
     // 5. Setup AR.js Context (Marker Detection)
     arToolkitContext = new THREEx.ArToolkitContext({
-        // IMPORTANT: Use a local path for camera_para.dat if you downloaded it,
-        // otherwise ensure this githack link is still valid.
-        // It's safer to download this file and place it in your repo as well.
-        cameraParametersUrl: 'https://raw.githack.com/AR-js-org/AR.js/master/data/camera_para.dat',
+        cameraParametersUrl: 'https://raw.githack.com/AR-js-org/AR.js/master/data/camera_para.dat', // Consider downloading this to your repo
         detectionMode: 'mono',
         maxDetectionRate: 60,
         canvasForContext: renderer.domElement
@@ -74,9 +89,6 @@ function init() {
     cube = new THREE.Mesh(geometry, material);
     cube.position.y = 0.05; // Position above the marker
     markerRoot.add(cube);
-
-    // Start the animation loop once everything is set up
-    animate();
 }
 
 // --- Animation Loop ---
@@ -84,15 +96,14 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Only update and render if AR Toolkit source is ready
-    if (arToolkitSource.ready === false) return;
-
-    arToolkitContext.update(arToolkitSource.domElement);
-    renderer.render(scene, camera);
+    if (arToolkitSource && arToolkitSource.ready === true) {
+        arToolkitContext.update(arToolkitSource.domElement);
+        renderer.render(scene, camera);
+    }
 }
 
 // --- Handle Window Resizing ---
 function onWindowResize() {
-    // Check if arToolkitSource is initialized before trying to use it
     if (arToolkitSource && arToolkitSource.ready) {
         arToolkitSource.copyElementSizeTo(renderer.domElement);
         arToolkitSource.copyElementSizeTo(arToolkitContext.domElement);
@@ -105,12 +116,27 @@ function onWindowResize() {
 }
 window.addEventListener('resize', onWindowResize, false);
 
-// --- Start the Application ONLY after user interaction ---
-document.getElementById('startButton').addEventListener('click', function() {
-    // Remove the event listener to prevent multiple initializations
-    document.getElementById('startButton').removeEventListener('click', arguments.callee);
-    init(); // Call the initialization function
+// --- Entry Point: Wait for DOM to load, then setup tap listener ---
+document.addEventListener('DOMContentLoaded', function() {
+    loaderElement = document.getElementById('arjs-loader');
+
+    // Add a single listener to the loader element that covers the whole screen
+    // This handles both click (desktop) and touch (mobile)
+    loaderElement.addEventListener('click', onInitialTap);
+    loaderElement.addEventListener('touchend', onInitialTap);
+
+    // Initial message on page load
+    console.log("Waiting for user tap to start AR experience.");
 });
 
-// We no longer use window.onload to directly call init(),
-// instead, init() is called by the button click.
+function onInitialTap() {
+    // Remove the listeners to prevent multiple calls
+    if (loaderElement) {
+        loaderElement.removeEventListener('click', onInitialTap);
+        loaderElement.removeEventListener('touchend', onInitialTap);
+    }
+
+    // Attempt to initialize AR
+    console.log("Tap detected. Initializing AR...");
+    init();
+}
