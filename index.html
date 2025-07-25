@@ -21,7 +21,7 @@
       animate();
 
       function init() {
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.body.appendChild(renderer.domElement);
@@ -33,7 +33,7 @@
         let light = new THREE.AmbientLight(0xffffff, 1);
         scene.add(light);
 
-        arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam' });
+        arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam', });
 
         arToolkitSource.init(() => {
           onResize();
