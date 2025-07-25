@@ -62,7 +62,7 @@ function init() {
 
     // 5. Setup AR.js Context (Marker Detection)
     arToolkitContext = new THREEx.ArToolkitContext({
-        cameraParametersUrl: 'https://raw.githack.com/AR-js-org/AR.js/master/data/camera_para.dat', // Consider downloading this to your repo
+        cameraParametersUrl: './camera_para.dat', // Consider downloading this to your repo
         detectionMode: 'mono',
         maxDetectionRate: 60,
         canvasForContext: renderer.domElement
