@@ -33,7 +33,7 @@
         let light = new THREE.AmbientLight(0xffffff, 1);
         scene.add(light);
 
-        arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam', });
+        arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam' });
 
         arToolkitSource.init(() => {
           onResize();
